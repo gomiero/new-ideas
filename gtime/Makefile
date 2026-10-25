@@ -1,46 +1,22 @@
-$(warning Start)
-
 # Copyright 2025-present Alexandre Gomiero de Oliveira
 # SPDX-License-Identifier: Apache-2.0
 # See LICENSE in the repository root.
 
-
-
-EXE_NAME=gtime
-
-SRC = $(wildcard *.c)
-OBJS = $(SRC:.c=.o)
-
 CC = gcc
-CXX = g++
-CFLAGS += -s -Wall -pedantic -Werror -O3
+CFLAGS ?= -O2 -Wall -Wextra -std=c11
 
-ifdef DEBUG
-CFLAGS += -g -DDEBUG -D__DEBUG -D__DEBUG__
+ifeq ($(OS),Windows_NT)
+TARGET = gtime.exe
+else
+TARGET = gtime
 endif
-
-CXXFLAGS += $(CFLAGS)
-
-LDFLAGS= # -L./lib
-LIBS = # -lm
-
-EXE = $(subst .c,,$(SRC))
-
-TARGET = $(EXE_NAME)
-
 
 .PHONY: all clean
 
-all:$(EXE_NAME)
+all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $<
-
-# $@ -> output
-# $< -> input
+$(TARGET): gtime.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 clean:
-	rm -rf *.o 
-
-dist-clean:
-	rm -rf *.o $(TARGET)
+	$(RM) gtime gtime.exe
