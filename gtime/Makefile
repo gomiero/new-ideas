@@ -3,7 +3,7 @@
 # See LICENSE in the repository root.
 
 CC = gcc
-CFLAGS ?= -O2 -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -pedantic -std=c11
 
 ifeq ($(OS),Windows_NT)
 TARGET = gtime.exe
@@ -11,12 +11,17 @@ else
 TARGET = gtime
 endif
 
-.PHONY: all clean
+.PHONY: all debug clean FORCE
 
 all: $(TARGET)
 
-$(TARGET): gtime.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
+$(TARGET): gtime.c FORCE
+	$(CC) $(CPPFLAGS) $(CFLAGS) -O3 -s $(LDFLAGS) -o $@ $< $(LDLIBS)
+
+debug:
+	$(CC) $(CPPFLAGS) $(CFLAGS) -O0 -g3 $(LDFLAGS) -o $(TARGET) gtime.c $(LDLIBS)
+
+FORCE:
 
 clean:
 	$(RM) gtime gtime.exe
